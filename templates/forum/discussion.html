@@ -231,7 +231,8 @@ a.forum-item-title:hover {
                     <div class="pull-left m-r-md">
                         <i class="fa fa-globe text-navy mid-icon"></i>
                     </div>
-                    <h2>{{ Divison.name }}</h2>
+                    <a href="{% url 'thread' Divison.id %}" class="forum-item-title"><h2>{{ Divison.name }}</h2></a>
+
 
                 </div>
             </div>
@@ -253,7 +254,7 @@ a.forum-item-title:hover {
                             <div class="forum-icon">
                                 <i class="fa fa-shield"></i>
                             </div>
-                            <h6 style="color:DodgerBlue;">{{ Topic.user }}</h6>
+                            <h5 style="color:DodgerBlue;">{{ Topic.user }}</h5>
                             <h2 style="color:MediumSeaGreen;">{{ Topic.name }}</h2>
                             <a href="" class="forum-item-title"></a>
                             <div class="forum-sub-title"><h4>{{ Topic.topic }}</h4></div>
@@ -266,18 +267,18 @@ a.forum-item-title:hover {
                         </div>
                         <div class="col-md-1 forum-info">
                             <span class="views-number">
-
+                                <small>Date</small>
                             </span>
                             <div>
-                                <small></small>
+                                <small>{{ Topic.date }}</small>
                             </div>
                         </div>
                         <div class="col-md-1 forum-info">
                             <span class="views-number">
-
+                              <small>Time</small>
                             </span>
                             <div>
-                                <small></small>
+                                <small>{{ Topic.time }}</small>
                             </div>
                         </div>
                     </div>
@@ -314,18 +315,18 @@ a.forum-item-title:hover {
                         </div>
                         <div class="col-md-1 forum-info">
                             <span class="views-number">
-
+                              <small>Date</small>
                             </span>
                             <div>
-                                <small> </small>
+                                <small>{{ x.date }} </small>
                             </div>
                         </div>
                         <div class="col-md-1 forum-info">
                             <span class="views-number">
-
+                              <small>Time</small>
                             </span>
                             <div>
-                                <small> </small>
+                                <small>{{ x.time }} </small>
                             </div>
                         </div>
                     </div>

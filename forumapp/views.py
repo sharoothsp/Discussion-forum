@@ -4,31 +4,52 @@ from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpResponseRedirect
+from datetime import datetime
 
 def home(request):
     Thread = Mainthread.objects.annotate(num_topics=Count('subthread'))[0:4]
-
     othersub = Mainthread.objects.annotate(num_of_topics=Count('subthread'))[4:]
+    total_topics = Subthread.objects.count()
+    total_posts = Comment.objects.count()
+    # below list contain number of comments from each thread
+    list=[]
+    for x in Thread:
+        list.append(Subthread.objects.filter(mainthread=x.id).aggregate(com = Count('comment')))
+
+    newzip = zip(Thread,list)
+    # below list contain number of comments from each thread from other subjects
+    post_list = []
+    for y in othersub:
+        post_list.append(Subthread.objects.filter(mainthread=y.id).aggregate(com = Count('comment')))
+
+
+    two_zip = zip(othersub,post_list)
+
 
     context = {
-    'Threads':Thread,
-    'othersubs': othersub,
-
-
-
+    'Threads':newzip,
+    'othersubs': two_zip,
+    'total_topics':total_topics,
+    'total_posts':total_posts,
     }
     return render(request,'home.html',context)
-
+#to each subthreads 
 def thread(request, my_id):
 
     Mthread = Mainthread.objects.get(id=my_id)
-    Sthread = Subthread.objects.filter(mainthread=my_id)
+    #reply_count contains number of comments per topic.
+    Sthread = Subthread.objects.filter(mainthread=my_id).annotate(reply_count=Count('comment'))
+    #total_comment contains total comments
+    total_comment = Subthread.objects.filter(mainthread=my_id).aggregate(com = Count('comment'))
+
+    #to get views
     Mthread.number_of_views += 1
     Mthread.save()
 
     context={
         'Mthreads':Mthread,
         'Sthreads':Sthread,
+        'count':total_comment,
 
 
     }
@@ -40,9 +61,12 @@ def create(request,my_id):
     if request.method =='POST':
         postform = PostForm(request.POST)
         if postform.is_valid():
+
             data = postform.save(commit=False)
             data.user = request.user
             data.mainthread = Mthread
+            data.time = datetime.time(datetime.now())
+            data.date = datetime.now()
             postform.save()
             return redirect('/')
     else:
@@ -56,6 +80,7 @@ def create(request,my_id):
 def discussion(request,thread_ids,topic_ids):
     Mthread = Mainthread.objects.get(id=thread_ids)
     Sthread = Subthread.objects.get(id=topic_ids)
+
     replies = Comment.objects.filter(subthread=topic_ids)
     if request.method == 'POST':
         commentform = CommentForm(request.POST)
@@ -63,10 +88,14 @@ def discussion(request,thread_ids,topic_ids):
             data = commentform.save(commit=False)
             data.user = request.user
             data.subthread = Sthread
+            data.date = datetime.now()
+            data.time = datetime.time(datetime.now())
             commentform.save()
             return HttpResponseRedirect(request.path_info)
     else:
         commentform = CommentForm()
+        Sthread.number_of_views += 1
+        Sthread.save()
 
     context={
     'Divison' : Mthread,
