@@ -6,6 +6,8 @@ class Mainthread(models.Model):
     name = models.TextField()
     description = models.TextField()
     number_of_views = models.IntegerField(default=0)
+    def __str__(self):
+        return self.name
 
 
 
@@ -17,6 +19,9 @@ class Subthread(models.Model):
     number_of_views = models.IntegerField(default=0)
     date = models.DateField(default=datetime.now)
     time = models.TimeField(default=datetime.time(datetime.now()))
+    def __str__(self):
+        return self.name
+    
 
 
 class Comment(models.Model):
@@ -26,3 +31,6 @@ class Comment(models.Model):
     date = models.DateField(default=datetime.now)
     time = models.TimeField(default=datetime.time(datetime.now()))
     number_of_posts = models.IntegerField(default=0)
+    def __str__(self):
+
+        return self.reply[0:10]

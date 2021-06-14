@@ -112,6 +112,10 @@ a.forum-item-title {
   display: block;
   font-size: 18px;
   font-weight: 600;
+
+
+
+
 }
 a.forum-item-title:hover {
   color: inherit;
@@ -245,7 +249,7 @@ a.forum-item-title:hover {
 
                     </div>
                       {% if user.is_authenticated %}
-                      <h3><a href="{% url 'create' Mthreads.id %}" class="forum-item-title">Create New Post</a></h3>
+                    <center>  <a href="{% url 'create' Mthreads.id %}"  class="btn btn-success"><h4>Create New Post</h4></a></center>
                       {% endif %}
                     <h3>Posts</h3>
 

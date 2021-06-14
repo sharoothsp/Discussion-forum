@@ -258,6 +258,7 @@ a.forum-item-title:hover {
                             <h2 style="color:MediumSeaGreen;">{{ Topic.name }}</h2>
                             <a href="" class="forum-item-title"></a>
                             <div class="forum-sub-title"><h4>{{ Topic.topic }}</h4></div>
+
                         </div>
                         <div class="col-md-1 forum-info">
 
@@ -280,8 +281,16 @@ a.forum-item-title:hover {
                             <div>
                                 <small>{{ Topic.time }}</small>
                             </div>
+
                         </div>
+
+
+
                     </div>
+                    {% if request.user.is_authenticated and request.user == Topic.user %}
+                    <a href="{% url 'delete_topic' Divison.id Topic.id %}" class="btn btn-danger" style="float: right;">Delete</a>
+                    {% endif %}
+
                 </div>
 
 
@@ -328,6 +337,9 @@ a.forum-item-title:hover {
                             <div>
                                 <small>{{ x.time }} </small>
                             </div>
+                            {% if request.user.is_authenticated and request.user == x.user %}
+                            <a href="{% url 'delete_comment' Divison.id Topic.id x.id %}" class="btn btn-danger" style="float: right;">Delete</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -335,11 +347,11 @@ a.forum-item-title:hover {
                 {% if user.is_authenticated %}
                 <form  method="POST">
                   {% csrf_token %}
-                replay to thread :  {{ commentforms.reply }}
+            <center>    replay to thread : <br> {{ commentforms.reply }}</center>
                 <br><br>
 
                   <center>
-                  <input type="submit" value="reply" >
+                  <input type="submit" value="reply" class="btn btn-success">
                 </center>
                 {% endif %}
 
@@ -354,6 +366,12 @@ a.forum-item-title:hover {
 <script type="text/javascript">
 
 </script>
+<script type="text/javascript">
+  {% for message in messages %}
+   alert('{{ message }}');
+
+  {% endfor %}
+  </script>
 </body>
 </html>
 {% endblock %}

@@ -28,4 +28,7 @@ urlpatterns = [
     path('thread/<int:my_id>',views.thread, name = 'thread'),
     path('thread/<int:my_id>/create',views.create, name ='create'),
     path('thread/<int:thread_ids>/<int:topic_ids>/view',views.discussion, name='discussion'),
+    path('delete/<int:thread_id>/<int:topic_id>',views.delete_topic , name='delete_topic'),
+    path('delete/<int:thread_id>/<int:topic_id>/<int:comment_id>',views.delete_comment , name='delete_comment')
+
 ]

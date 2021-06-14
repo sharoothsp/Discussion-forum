@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from django.contrib import messages
 
 def home(request):
     Thread = Mainthread.objects.annotate(num_topics=Count('subthread'))[0:4]
@@ -33,7 +34,7 @@ def home(request):
     'total_posts':total_posts,
     }
     return render(request,'home.html',context)
-#to each subthreads 
+#to each subthreads
 def thread(request, my_id):
 
     Mthread = Mainthread.objects.get(id=my_id)
@@ -57,6 +58,7 @@ def thread(request, my_id):
 #to create a topic.
 @login_required
 def create(request,my_id):
+    print(my_id)
     Mthread = Mainthread.objects.get(id=my_id)
     if request.method =='POST':
         postform = PostForm(request.POST)
@@ -68,7 +70,7 @@ def create(request,my_id):
             data.time = datetime.time(datetime.now())
             data.date = datetime.now()
             postform.save()
-            return redirect('/')
+            return redirect('/thread/{id}'.format(id=my_id))
     else:
         postform = PostForm()
     context = {
@@ -105,6 +107,32 @@ def discussion(request,thread_ids,topic_ids):
 
     }
     return render(request,'forum/discussion.html',context)
+
+@login_required
+def delete_topic(request,thread_id,topic_id):
+    Sthread = Subthread.objects.get(id=topic_id)
+
+    if request.user == Sthread.user:
+        Sthread.delete()
+        #redirecting to subthread page
+        return redirect('/thread/{id}'.format(id=thread_id))
+    else:
+        messages.info(request,'You dont have permission')
+        #redirecting to same page
+        return redirect('discussion',thread_ids=thread_id, topic_ids=topic_id)
+@login_required
+def delete_comment(request,thread_id,topic_id,comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    if request.user == comment.user:
+        comment.delete()
+        # redirecting to same page
+
+        return redirect('discussion',thread_ids=thread_id, topic_ids=topic_id)
+    else:
+        messages.info(request,'You dont have permission')
+        #redirecting to same page
+        return redirect('discussion',thread_ids=thread_id, topic_ids=topic_id)
+
 
 """def test(request):
     objs=Subthread.objects.all()
