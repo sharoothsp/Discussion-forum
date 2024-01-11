@@ -134,12 +134,3 @@ def delete_comment(request,thread_id,topic_id,comment_id):
         return redirect('discussion',thread_ids=thread_id, topic_ids=topic_id)
 
 
-"""def test(request):
-    objs=Subthread.objects.all()
-    context = {
-    'obj':objs
-
-
-    }
-    return render(request,'test.html',context)
-"""
